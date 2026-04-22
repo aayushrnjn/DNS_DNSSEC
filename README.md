@@ -276,12 +276,3 @@ Expected output: INVALID, RRSIG verification failed
     docker-compose down
 
 ---
-
-## Important Notes
-
-- Q2, Q3, Q4 import Q1 using sys.path.append('../q1_validation_module')
-- Always run each script from its own directory
-- Q5 validator must be run inside the Docker user container
-- Internet access required for Q1-Q4 (uses Google DNS 8.8.8.8)
-- Docker Desktop must be running for Q5
-- Rosetta emulation must be enabled in Docker Desktop for MacOS
