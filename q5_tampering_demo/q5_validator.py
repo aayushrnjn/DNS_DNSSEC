@@ -130,13 +130,17 @@ def validate_record(domain, record_type, server):
     print(f"  [*] DNSKEY retrieved for {signer}")
 
     # Verify RRSIG using DNSKEY
+    # Check AD flag in response
+    ad_flag = bool(response.flags & dns.flags.AD)
+
+    # Verify RRSIG using DNSKEY
     try:
         dns.dnssec.validate(answer_rrset, rrsig_rrset, keys)
-        return ip, True, None
+        return ip, True, None, ad_flag
     except dns.dnssec.ValidationFailure as e:
-        return ip, False, f"RRSIG verification failed: {e}"
+        return ip, False, f"RRSIG verification failed: {e}", ad_flag
     except Exception as e:
-        return ip, False, f"Validation error: {e}"
+        return ip, False, f"Validation error: {e}", ad_flag
 
 
 # ─────────────────────────────────────────────
@@ -154,13 +158,13 @@ def main():
     print(f"\n[Part A] Querying authoritative server: {AUTH_SERVER}")
     print(f"[*] Validating {DOMAIN} {RECORD_TYPE}...")
 
-    ip, valid, reason = validate_record(
+    ip, valid, reason, ad_flag = validate_record(
         DOMAIN, RECORD_TYPE, AUTH_SERVER)
 
     print(f"\n  IP returned  : {ip}")
+    print(f"  AD flag      : {'SET (authentic data)' if ad_flag else 'NOT SET (unauthenticated)'}")
     if valid:
         print(f"  Validation   : VALID")
-        print(f"  ad flag      : Authentic Data confirmed")
     else:
         print(f"  Validation   : INVALID")
         print(f"  Failure point: {reason}")

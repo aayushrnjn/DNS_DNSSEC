@@ -42,7 +42,7 @@ def retrieve_dnskeys(domain):
     Retrieve all DNSKEY records for the domain.
     Categorizes each key as KSK or ZSK and extracts:
     - key_tag, algorithm, flags, key size indicator
-    Returns list of key detail dicts.
+    Returns (key_list, ksks, zsks, keys, dnskey_answer) tuple.
     """
     print(f"\n[*] Retrieving DNSKEY records for {domain}...")
     keys, dnskey_answer = get_dnskey(domain)
